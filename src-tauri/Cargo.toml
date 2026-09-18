@@ -1,0 +1,21 @@
+[package]
+name = "paletizador-3d"
+version = "1.0.0"
+description = "Visualizador 3D de Pallet"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Hiper-otimização para tamanho mínimo do .exe
+[profile.release]
+opt-level = "z"     # Otimização agressiva focada no menor tamanho de binário possível
+lto = true          # Link Time Optimization (remove todo código morto e não usado)
+codegen-units = 1   # Unifica as unidades de compilação para compressão máxima
+panic = "abort"     # Remove a tabela pesada de stack unwinding
+strip = true        # Remove todos os símbolos de debug e nomes internos

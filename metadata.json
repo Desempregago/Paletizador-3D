@@ -1,0 +1,6 @@
+{
+  "name": "Visualizador 3D de Pallet",
+  "description": "Visualizador 3D de pallet com colunas configuráveis em centímetros, posicionamento livre e produtos lado a lado sem sobreposição.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

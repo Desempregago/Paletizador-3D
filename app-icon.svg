@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="palletWood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4A373"/>
+      <stop offset="100%" stop-color="#A9714B"/>
+    </linearGradient>
+    <linearGradient id="boxBlue1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="boxBlue2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="boxOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded app badge -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+
+  <g filter="url(#shadow)">
+    <!-- Box 1 (Top Left) -->
+    <path d="M 170 150 L 256 105 L 342 150 L 256 195 Z" fill="#93C5FD"/>
+    <path d="M 170 150 L 256 195 L 256 280 L 170 235 Z" fill="url(#boxBlue1)"/>
+    <path d="M 256 195 L 342 150 L 342 235 L 256 280 Z" fill="url(#boxBlue2)"/>
+
+    <!-- Box 2 (Right smaller / orange) -->
+    <path d="M 290 235 L 360 200 L 420 232 L 350 267 Z" fill="#FDBA74"/>
+    <path d="M 290 235 L 350 267 L 350 335 L 290 303 Z" fill="url(#boxOrange)"/>
+    <path d="M 350 267 L 420 232 L 420 300 L 350 335 Z" fill="#EA580C"/>
+
+    <!-- Box 3 (Front left box) -->
+    <path d="M 100 240 L 180 198 L 250 235 L 170 277 Z" fill="#BAE6FD"/>
+    <path d="M 100 240 L 170 277 L 170 350 L 100 313 Z" fill="#0284C7"/>
+    <path d="M 170 277 L 250 235 L 250 308 L 170 350 Z" fill="#0369A1"/>
+
+    <!-- Pallet Top Deck -->
+    <path d="M 60 360 L 256 260 L 452 360 L 256 460 Z" fill="url(#palletWood)"/>
+    
+    <!-- Pallet Deck Slats separation lines -->
+    <path d="M 110 335 L 306 435" stroke="#78350F" stroke-width="3" opacity="0.6"/>
+    <path d="M 160 310 L 356 410" stroke="#78350F" stroke-width="3" opacity="0.6"/>
+    <path d="M 210 285 L 406 385" stroke="#78350F" stroke-width="3" opacity="0.6"/>
+
+    <!-- Pallet Stringer blocks and bottom deck -->
+    <path d="M 60 360 L 60 385 L 256 485 L 256 460 Z" fill="#8C532B"/>
+    <path d="M 452 360 L 452 385 L 256 485 L 256 460 Z" fill="#6F3F1E"/>
+    
+    <!-- Pallet front block cutouts (feet) -->
+    <path d="M 110 395 L 180 430 L 180 445 L 110 410 Z" fill="#1E1610"/>
+    <path d="M 330 445 L 400 410 L 400 395 L 330 430 Z" fill="#1E1610"/>
+  </g>
+</svg>

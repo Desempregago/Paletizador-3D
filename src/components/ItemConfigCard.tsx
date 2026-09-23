@@ -42,7 +42,7 @@ export const ItemConfigCard: React.FC<ItemConfigCardProps> = ({
 
   // Cálculo da capacidade de empilhamento vertical respeitando a altura máxima permitida do pallet
   const availableHeight = Math.max(0, pallet.maxAllowedHeight - pallet.height);
-  const maxAllowedBoxes = Math.max(1, Math.floor(availableHeight / Math.max(1, item.height)));
+  const maxAllowedBoxes = Math.max(1, Math.floor(availableHeight / Math.max(0.01, item.height)));
   const currentStack = Math.min(item.stackCount || 1, maxAllowedBoxes);
   const totalItemBoxes = (item.columnsCountX || 1) * (item.columnsCountZ || 1) * currentStack;
   const columnLoadHeight = currentStack * item.height;
@@ -165,12 +165,13 @@ export const ItemConfigCard: React.FC<ItemConfigCardProps> = ({
                 <input
                   id={`item-width-${item.id}`}
                   type="number"
-                  min="5"
-                  max="150"
-                  value={item.width}
-                  onChange={(e) =>
-                    onUpdate({ ...item, width: Math.max(5, parseFloat(e.target.value) || 10) })
-                  }
+                  min="0.1"
+                  step="any"
+                  value={item.width || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    onUpdate({ ...item, width: isNaN(val) ? 0 : val });
+                  }}
                   className="w-full bg-slate-900 border border-slate-700/80 rounded px-1.5 py-0.5 text-xs text-white font-mono focus:border-amber-400 focus:outline-none pr-5 h-7"
                 />
                 <span className="absolute right-1 top-1 text-[9px] text-slate-500 pointer-events-none">cm</span>
@@ -184,12 +185,13 @@ export const ItemConfigCard: React.FC<ItemConfigCardProps> = ({
                 <input
                   id={`item-length-${item.id}`}
                   type="number"
-                  min="5"
-                  max="150"
-                  value={item.length}
-                  onChange={(e) =>
-                    onUpdate({ ...item, length: Math.max(5, parseFloat(e.target.value) || 10) })
-                  }
+                  min="0.1"
+                  step="any"
+                  value={item.length || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    onUpdate({ ...item, length: isNaN(val) ? 0 : val });
+                  }}
                   className="w-full bg-slate-900 border border-slate-700/80 rounded px-1.5 py-0.5 text-xs text-white font-mono focus:border-amber-400 focus:outline-none pr-5 h-7"
                 />
                 <span className="absolute right-1 top-1 text-[9px] text-slate-500 pointer-events-none">cm</span>
@@ -203,13 +205,14 @@ export const ItemConfigCard: React.FC<ItemConfigCardProps> = ({
                 <input
                   id={`item-height-${item.id}`}
                   type="number"
-                  min="5"
-                  max="150"
-                  value={item.height}
+                  min="0.1"
+                  step="any"
+                  value={item.height || ''}
                   onChange={(e) => {
-                    const newH = Math.max(5, parseFloat(e.target.value) || 10);
+                    const val = parseFloat(e.target.value);
+                    const newH = isNaN(val) ? 0 : val;
                     const newAvailH = Math.max(0, pallet.maxAllowedHeight - pallet.height);
-                    const newMaxBoxes = Math.max(1, Math.floor(newAvailH / newH));
+                    const newMaxBoxes = newH > 0 ? Math.max(1, Math.floor(newAvailH / newH)) : 1;
                     const newStack = Math.min(item.stackCount || 1, newMaxBoxes);
                     onUpdate({ ...item, height: newH, stackCount: newStack });
                   }}
@@ -440,9 +443,12 @@ export const ItemConfigCard: React.FC<ItemConfigCardProps> = ({
             <input
               type="number"
               min="0"
-              step="0.5"
-              value={item.weight}
-              onChange={(e) => onUpdate({ ...item, weight: Math.max(0, parseFloat(e.target.value) || 0) })}
+              step="any"
+              value={item.weight ?? ''}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                onUpdate({ ...item, weight: isNaN(val) ? 0 : val });
+              }}
               className="w-12 bg-slate-950 border border-slate-700/80 rounded px-1 py-0.5 text-center font-mono text-xs text-white h-6"
             />
             <span className="text-[9px] text-slate-400">kg</span>

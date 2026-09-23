@@ -5,6 +5,7 @@
   "identifier": "com.paletizador.app",
   "build": {
     "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:3000",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },

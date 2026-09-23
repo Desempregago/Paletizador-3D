@@ -28,13 +28,13 @@ export const PalletSettingsModal: React.FC<PalletSettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-md p-5 shadow-2xl space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-md p-4 sm:p-5 shadow-2xl space-y-3.5 max-h-[92vh] overflow-y-auto custom-scrollbar">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-2.5 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <Settings2 className="w-5 h-5 text-amber-400" />
-            <h3 className="text-base font-semibold text-white">Configurar Dimensões do Pallet</h3>
+            <h3 className="text-sm sm:text-base font-semibold text-white">Configurar Dimensões do Pallet</h3>
           </div>
           <button
             id="btn-close-pallet-settings"
@@ -87,15 +87,16 @@ export const PalletSettingsModal: React.FC<PalletSettingsModalProps> = ({
                 <input
                   id="pallet-width-input"
                   type="number"
-                  min="40"
-                  max="300"
-                  value={pallet.width}
-                  onChange={(e) =>
+                  min="1"
+                  step="any"
+                  value={pallet.width || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
                     onUpdatePallet({
                       ...pallet,
-                      width: Math.max(20, parseFloat(e.target.value) || 100),
-                    })
-                  }
+                      width: isNaN(val) ? 0 : val,
+                    });
+                  }}
                   className="w-full h-10 bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg text-center font-mono font-bold text-base text-white focus:outline-none pr-6 pl-2"
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none font-mono">
@@ -110,15 +111,16 @@ export const PalletSettingsModal: React.FC<PalletSettingsModalProps> = ({
                 <input
                   id="pallet-length-input"
                   type="number"
-                  min="40"
-                  max="300"
-                  value={pallet.length}
-                  onChange={(e) =>
+                  min="1"
+                  step="any"
+                  value={pallet.length || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
                     onUpdatePallet({
                       ...pallet,
-                      length: Math.max(20, parseFloat(e.target.value) || 120),
-                    })
-                  }
+                      length: isNaN(val) ? 0 : val,
+                    });
+                  }}
                   className="w-full h-10 bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg text-center font-mono font-bold text-base text-white focus:outline-none pr-6 pl-2"
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none font-mono">
@@ -133,16 +135,16 @@ export const PalletSettingsModal: React.FC<PalletSettingsModalProps> = ({
                 <input
                   id="pallet-height-input"
                   type="number"
-                  min="5"
-                  max="30"
-                  step="0.1"
-                  value={pallet.height}
-                  onChange={(e) =>
+                  min="0"
+                  step="any"
+                  value={pallet.height || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
                     onUpdatePallet({
                       ...pallet,
-                      height: Math.max(5, parseFloat(e.target.value) || 14.4),
-                    })
-                  }
+                      height: isNaN(val) ? 0 : val,
+                    });
+                  }}
                   className="w-full h-10 bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg text-center font-mono font-bold text-base text-white focus:outline-none pr-6 pl-2"
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none font-mono">
@@ -166,16 +168,16 @@ export const PalletSettingsModal: React.FC<PalletSettingsModalProps> = ({
               <input
                 id="pallet-max-height-input"
                 type="number"
-                min="50"
-                max="300"
-                step="5"
-                value={pallet.maxAllowedHeight}
-                onChange={(e) =>
+                min="1"
+                step="any"
+                value={pallet.maxAllowedHeight || ''}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
                   onUpdatePallet({
                     ...pallet,
-                    maxAllowedHeight: Math.max(50, parseFloat(e.target.value) || 180),
-                  })
-                }
+                    maxAllowedHeight: isNaN(val) ? 0 : val,
+                  });
+                }}
                 className="w-full bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg px-3 py-2 text-xs text-white font-mono font-bold focus:outline-none"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">

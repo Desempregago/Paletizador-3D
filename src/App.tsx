@@ -10,7 +10,6 @@ import { PalletViewer3D } from './components/PalletViewer3D';
 import { LastroCanvasEditor } from './components/LastroCanvasEditor';
 import { ItemConfigCard } from './components/ItemConfigCard';
 import { MetricsBar } from './components/MetricsBar';
-import { ColumnLayoutInspector } from './components/ColumnLayoutInspector';
 import { PalletSettingsModal } from './components/PalletSettingsModal';
 import { 
   Plus, 
@@ -85,6 +84,8 @@ export default function App() {
 
   // View Mode: 'split' (3D + Lastro 2D), '3d' (Full 3D), 'lastro' (Full 2D Lastro Drawing)
   const [viewMode, setViewMode] = useState<'split' | '3d' | 'lastro'>('split');
+  // Metrics bar density state
+  const [isMetricsCompact, setIsMetricsCompact] = useState<boolean>(false);
 
   // Cards display density / layout: 'grid' (2 side-by-side columns to see multiple cards at once) or 'list' (1 column)
   const [cardLayout, setCardLayout] = useState<'grid' | 'list'>('grid');
@@ -104,7 +105,8 @@ export default function App() {
   // Função utilitária para garantir o cumprimento estrito da altura máxima do pallet
   const enforceItemLimits = (item: BoxItem, currentPallet: PalletConfig): BoxItem => {
     const availableH = Math.max(0, currentPallet.maxAllowedHeight - currentPallet.height);
-    const maxStack = Math.max(1, Math.floor(availableH / Math.max(1, item.height)));
+    const boxH = item.height > 0 ? item.height : 0.01;
+    const maxStack = Math.max(1, Math.floor(availableH / boxH));
     const safeStack = Math.min(Math.max(1, item.stackCount || 1), maxStack);
     return { ...item, stackCount: safeStack };
   };
@@ -299,69 +301,69 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30 px-3 sm:px-6 py-2.5">
-        <div className="max-w-[1720px] mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <Compass className="w-5 h-5 text-slate-950" />
+      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30 px-3 sm:px-4 py-1.5 sm:py-2">
+        <div className="max-w-[1720px] mx-auto flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 flex-shrink-0">
+              <Compass className="w-4 h-4 text-slate-950" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold text-white tracking-tight">
-                  Visualizador 3D & Desenho do Lastro
+                <h1 className="text-xs sm:text-sm md:text-base font-bold text-white tracking-tight">
+                  Visualizador 3D & Lastro
                 </h1>
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   <ShieldCheck className="w-3 h-3" /> Planta Baixa & 3D
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="hidden xl:block text-[11px] text-slate-400">
                 Desenhe o lastro na planta 2D ou posicione colunas no estrado 3D lado a lado
               </p>
             </div>
           </div>
 
           {/* Quick Actions / Pallet Presets */}
-          <div className="flex items-center flex-wrap gap-2">
+          <div className="flex items-center flex-wrap gap-1.5">
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/60 text-xs">
+            <div className="flex items-center bg-slate-800/80 p-0.5 rounded-lg border border-slate-700/60 text-xs">
               <button
                 id="btn-mode-split"
                 onClick={() => setViewMode('split')}
                 title="Visualização 3D e Desenho do Lastro 2D integrados"
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1 rounded font-medium text-[11px] transition-colors cursor-pointer ${
                   viewMode === 'split'
                     ? 'bg-amber-500 text-slate-950 font-semibold shadow'
                     : 'text-slate-300 hover:text-white'
                 }`}
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>3D + Lastro 2D</span>
+                <LayoutGrid className="w-3 h-3" />
+                <span>3D + Lastro</span>
               </button>
               <button
                 id="btn-mode-lastro"
                 onClick={() => setViewMode('lastro')}
                 title="Desenho do Lastro em tela ampla"
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1 rounded font-medium text-[11px] transition-colors cursor-pointer ${
                   viewMode === 'lastro'
                     ? 'bg-amber-500 text-slate-950 font-semibold shadow'
                     : 'text-slate-300 hover:text-white'
                 }`}
               >
-                <Compass className="w-3.5 h-3.5" />
-                <span>Desenhar Lastro</span>
+                <Compass className="w-3 h-3" />
+                <span>Lastro 2D</span>
               </button>
               <button
                 id="btn-mode-3d"
                 onClick={() => setViewMode('3d')}
                 title="Visualizador 3D exclusivo"
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1 rounded font-medium text-[11px] transition-colors cursor-pointer ${
                   viewMode === '3d'
                     ? 'bg-amber-500 text-slate-950 font-semibold shadow'
                     : 'text-slate-300 hover:text-white'
                 }`}
               >
-                <Eye className="w-3.5 h-3.5" />
-                <span>Visualizador 3D</span>
+                <Eye className="w-3 h-3" />
+                <span>3D Puro</span>
               </button>
             </div>
 
@@ -369,54 +371,59 @@ export default function App() {
             <button
               id="btn-open-pallet-settings"
               onClick={() => setIsPalletModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700/80 transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium rounded-lg border border-slate-700/80 transition-all cursor-pointer shadow-sm"
             >
-              <Settings className="w-3.5 h-3.5 text-amber-400" />
-              <span>Pallet: <strong className="text-white font-mono">{pallet.width}×{pallet.length} cm</strong></span>
+              <Settings className="w-3 h-3 text-amber-400" />
+              <span>Pallet: <strong className="text-white font-mono">{pallet.width}×{pallet.length}</strong></span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-[1720px] mx-auto w-full px-3 sm:px-6 py-3.5 flex-1 flex flex-col gap-3.5">
+      <main className="max-w-[1720px] mx-auto w-full px-2 sm:px-4 py-2 sm:py-2.5 flex-1 flex flex-col gap-2.5">
         {/* KPI Metrics Dashboard Bar */}
-        <MetricsBar metrics={metrics} pallet={pallet} />
+        <MetricsBar
+          metrics={metrics}
+          pallet={pallet}
+          isCompact={isMetricsCompact}
+          onToggleCompact={() => setIsMetricsCompact((v) => !v)}
+        />
 
         {/* Quick Layout Presets & Info Banner */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-          <div className="flex items-center gap-2 text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div className="bg-slate-900/60 border border-slate-800 rounded-xl px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          <div className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>
-              <strong>Modo de Lastro & Colunas:</strong> Desenhe o lastro no estrado 2D ou ajuste posições livremente. Sincronização 3D em tempo real.
+              <strong>Cenários Prontos:</strong> Posicionamento inteligente no estrado sem sobreposição.
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
               id="btn-preset-3cols"
               onClick={() => handleSelectPresetScenario('3cols')}
-              className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] transition-colors cursor-pointer"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px] transition-colors cursor-pointer"
             >
               3 Colunas
             </button>
             <button
               id="btn-preset-4quads"
               onClick={() => handleSelectPresetScenario('4quads')}
-              className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] transition-colors cursor-pointer"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px] transition-colors cursor-pointer"
             >
               4 Quadrantes
             </button>
             <button
               id="btn-preset-2towers"
               onClick={() => handleSelectPresetScenario('2towers')}
-              className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] transition-colors cursor-pointer"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px] transition-colors cursor-pointer"
             >
-              2 Setores Duplos
+              2 Setores
             </button>
             <button
               id="btn-auto-align-banner"
               onClick={handleAutoArrange}
-              className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg font-medium text-[11px] transition-colors cursor-pointer flex items-center gap-1"
+              className="px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded font-medium text-[11px] transition-colors cursor-pointer flex items-center gap-1"
             >
               <Sparkles className="w-3 h-3" /> Alinhar Tudo
             </button>
@@ -424,21 +431,24 @@ export default function App() {
         </div>
 
         {/* Visualizers & Config Cards Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-[600px]">
-          {/* Main Visual Display */}
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-5 flex flex-col gap-4">
-            {/* View Mode: SPLIT (3D and 2D Lastro Editor together) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1">
+          {/* Main Visual Display (Left Column) */}
+          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-5 flex flex-col gap-3">
+            {/* View Mode: SPLIT (3D on top, 2D Lastro underneath) */}
             {viewMode === 'split' && (
-              <div className="flex flex-col gap-4">
-                {/* 3D Pallet View */}
-                <div className="w-full h-[460px]">
+              <div className="flex flex-col gap-3">
+                {/* 3D Pallet View with responsive height */}
+                <div className="w-full h-[300px] sm:h-[340px] xl:h-[380px] 2xl:h-[450px] shrink-0 rounded-2xl overflow-hidden shadow-lg">
                   <PalletViewer3D
                     pallet={pallet}
                     boxes={placedBoxes}
                     columnsSummary={columnsSummary}
                     explodedOffset={explodedOffset}
+                    onExplodedOffsetChange={setExplodedOffset}
                     showDimensions={showDimensions}
+                    onToggleDimensions={() => setShowDimensions((v) => !v)}
                     showWireframe={showWireframe}
+                    onToggleWireframe={() => setShowWireframe((v) => !v)}
                     onSelectBox={setSelectedBox}
                     selectedBoxId={selectedBox?.id}
                     selectedItemId={selectedItemId}
@@ -458,27 +468,12 @@ export default function App() {
                   onAutoArrange={handleAutoArrange}
                   onAddItem={handleAddItem}
                 />
-
-                {/* Column Layout Inspector */}
-                <ColumnLayoutInspector
-                  columnsSummary={columnsSummary}
-                  pallet={pallet}
-                  explodedOffset={explodedOffset}
-                  onExplodedOffsetChange={setExplodedOffset}
-                  showDimensions={showDimensions}
-                  onToggleDimensions={() => setShowDimensions((v) => !v)}
-                  showWireframe={showWireframe}
-                  onToggleWireframe={() => setShowWireframe((v) => !v)}
-                  onAutoArrange={handleAutoArrange}
-                  selectedItemId={selectedItemId}
-                  onSelectItemId={setSelectedItemId}
-                />
               </div>
             )}
 
             {/* View Mode: 2D LASTRO FULL */}
             {viewMode === 'lastro' && (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2.5">
                 <LastroCanvasEditor
                   pallet={pallet}
                   items={items}
@@ -490,67 +485,41 @@ export default function App() {
                   onAutoArrange={handleAutoArrange}
                   onAddItem={handleAddItem}
                 />
-
-                {/* Column Layout Inspector */}
-                <ColumnLayoutInspector
-                  columnsSummary={columnsSummary}
-                  pallet={pallet}
-                  explodedOffset={explodedOffset}
-                  onExplodedOffsetChange={setExplodedOffset}
-                  showDimensions={showDimensions}
-                  onToggleDimensions={() => setShowDimensions((v) => !v)}
-                  showWireframe={showWireframe}
-                  onToggleWireframe={() => setShowWireframe((v) => !v)}
-                  onAutoArrange={handleAutoArrange}
-                  selectedItemId={selectedItemId}
-                  onSelectItemId={setSelectedItemId}
-                />
               </div>
             )}
 
             {/* View Mode: 3D FULL */}
             {viewMode === '3d' && (
-              <div className="flex flex-col gap-4">
-                <div className="w-full h-[580px]">
+              <div className="flex flex-col gap-2.5">
+                <div className="w-full h-[460px] sm:h-[540px] xl:h-[620px] 2xl:h-[720px]">
                   <PalletViewer3D
                     pallet={pallet}
                     boxes={placedBoxes}
                     columnsSummary={columnsSummary}
                     explodedOffset={explodedOffset}
+                    onExplodedOffsetChange={setExplodedOffset}
                     showDimensions={showDimensions}
+                    onToggleDimensions={() => setShowDimensions((v) => !v)}
                     showWireframe={showWireframe}
+                    onToggleWireframe={() => setShowWireframe((v) => !v)}
                     onSelectBox={setSelectedBox}
                     selectedBoxId={selectedBox?.id}
                     selectedItemId={selectedItemId}
                     onSelectItemId={setSelectedItemId}
                   />
                 </div>
-
-                <ColumnLayoutInspector
-                  columnsSummary={columnsSummary}
-                  pallet={pallet}
-                  explodedOffset={explodedOffset}
-                  onExplodedOffsetChange={setExplodedOffset}
-                  showDimensions={showDimensions}
-                  onToggleDimensions={() => setShowDimensions((v) => !v)}
-                  showWireframe={showWireframe}
-                  onToggleWireframe={() => setShowWireframe((v) => !v)}
-                  onAutoArrange={handleAutoArrange}
-                  selectedItemId={selectedItemId}
-                  onSelectItemId={setSelectedItemId}
-                />
               </div>
             )}
           </div>
 
           {/* Right Sidebar: 1 to 6 Configurable Columns */}
-          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-7 flex flex-col gap-3">
+          <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-7 flex flex-col gap-2.5">
             {/* Items Header */}
-            <div className="flex items-center justify-between bg-slate-900/85 px-3 py-2.5 rounded-xl border border-slate-800">
-              <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between bg-slate-900/85 px-2.5 py-2 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
-                  <h2 className="text-sm font-bold text-white">Produtos & Colunas</h2>
-                  <span className="text-[11px] font-mono font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                  <h2 className="text-xs sm:text-sm font-bold text-white">Produtos & Colunas</h2>
+                  <span className="text-[10px] font-mono font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-500/20">
                     {items.length} / 6
                   </span>
                 </div>
@@ -560,7 +529,7 @@ export default function App() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {/* View Density Toggle: Grid (2 cols side-by-side) vs List (1 col) */}
                 <div className="flex items-center bg-slate-800/80 p-0.5 rounded-lg border border-slate-700/60">
                   <button
@@ -568,13 +537,13 @@ export default function App() {
                     type="button"
                     onClick={() => setCardLayout('grid')}
                     title="Exibir em 2 colunas lado a lado (exibe muito mais cards sem rolar)"
-                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all cursor-pointer ${
+                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium transition-all cursor-pointer ${
                       cardLayout === 'grid'
                         ? 'bg-amber-500 text-slate-950 font-semibold shadow'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    <Grid2X2 className="w-3.5 h-3.5" />
+                    <Grid2X2 className="w-3 h-3" />
                     <span className="hidden md:inline text-[11px]">2 Colunas</span>
                   </button>
                   <button
@@ -582,13 +551,13 @@ export default function App() {
                     type="button"
                     onClick={() => setCardLayout('list')}
                     title="Exibir em lista única"
-                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all cursor-pointer ${
+                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium transition-all cursor-pointer ${
                       cardLayout === 'list'
                         ? 'bg-amber-500 text-slate-950 font-semibold shadow'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    <List className="w-3.5 h-3.5" />
+                    <List className="w-3 h-3" />
                     <span className="hidden md:inline text-[11px]">Lista</span>
                   </button>
                 </div>
@@ -599,20 +568,20 @@ export default function App() {
                   onClick={handleAddItem}
                   disabled={items.length >= 6}
                   title={items.length >= 6 ? 'Limite máximo de 6 itens atingido' : 'Adicionar novo produto'}
-                  className="flex items-center gap-1 px-2.5 py-1.5 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 disabled:opacity-40 text-slate-950 font-semibold text-xs rounded-lg shadow transition-all cursor-pointer disabled:cursor-not-allowed"
+                  className="flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 disabled:opacity-40 text-slate-950 font-semibold text-[11px] rounded-lg shadow transition-all cursor-pointer disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3" />
                   <span>Novo Produto</span>
                 </button>
               </div>
             </div>
 
-            {/* Config Cards for each Item Column - Área de rolagem com alta densidade e opção de 2 colunas */}
+            {/* Config Cards for each Item Column */}
             <div
-              className={`overflow-y-auto max-h-[calc(100vh-140px)] pr-1 custom-scrollbar ${
+              className={`overflow-y-auto max-h-[calc(100vh-170px)] sm:max-h-[calc(100vh-150px)] pr-1 custom-scrollbar ${
                 cardLayout === 'grid'
-                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 items-start'
-                  : 'flex flex-col gap-2.5'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-2 items-start'
+                  : 'flex flex-col gap-2'
               }`}
             >
               {items.map((item, idx) => {
@@ -632,22 +601,6 @@ export default function App() {
                   />
                 );
               })}
-
-              {items.length < 6 && (
-                <button
-                  id="btn-add-item-dashed"
-                  onClick={handleAddItem}
-                  className={`border-2 border-dashed border-slate-800 hover:border-amber-500/50 hover:bg-slate-900/40 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-amber-300 transition-all cursor-pointer text-xs ${
-                    cardLayout === 'grid' ? 'min-h-[160px] p-4 h-full' : 'py-3'
-                  }`}
-                >
-                  <Plus className="w-4 h-4 text-amber-400" />
-                  <span className="font-semibold">Adicionar Produto {items.length + 1}</span>
-                  <span className="text-[10px] text-slate-500">
-                    Posiciona uma nova coluna no lastro (até 6)
-                  </span>
-                </button>
-              )}
             </div>
           </div>
         </div>

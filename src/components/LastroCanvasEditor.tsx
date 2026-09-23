@@ -294,17 +294,6 @@ export const LastroCanvasEditor: React.FC<LastroCanvasEditorProps> = ({
             </button>
           </div>
 
-          {/* Auto-Align Button */}
-          <button
-            id="btn-auto-arrange-lastro"
-            onClick={onAutoArrange}
-            title="Alinha todas as caixas lado a lado no lastro sem espaços vazios"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-xl shadow transition-colors cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Alinhar Lastro</span>
-          </button>
-
           {/* Print/Export Button */}
           <button
             id="btn-print-lastro"
@@ -319,50 +308,50 @@ export const LastroCanvasEditor: React.FC<LastroCanvasEditorProps> = ({
       </div>
 
       {/* Lastro KPI Highlights */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-between">
-          <span className="text-[11px] text-slate-400">Caixas no Lastro</span>
-          <div className="mt-0.5 flex items-baseline gap-1">
-            <span className="text-lg font-bold font-mono text-amber-400">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+        <div className="bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-slate-800 flex flex-col justify-between">
+          <span className="text-[10px] text-slate-400">Caixas no Lastro</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-base font-bold font-mono text-amber-400">
               {lastroMetrics.totalBoxesOnLastro}
             </span>
-            <span className="text-[10px] text-slate-500">un no piso</span>
+            <span className="text-[10px] text-slate-500">no piso</span>
           </div>
         </div>
 
-        <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-between">
-          <span className="text-[11px] text-slate-400">Ocupação do Lastro</span>
-          <div className="mt-0.5 flex items-baseline gap-1">
-            <span className="text-lg font-bold font-mono text-white">
+        <div className="bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-slate-800 flex flex-col justify-between">
+          <span className="text-[10px] text-slate-400">Ocupação do Lastro</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-base font-bold font-mono text-white">
               {lastroMetrics.utilizationPct}%
             </span>
             <span className="text-[10px] text-slate-500 font-mono">
-              ({(lastroMetrics.occupiedAreaCm2 / 10000).toFixed(2)} m²)
+              ({(lastroMetrics.occupiedAreaCm2 / 10000).toFixed(2)}m²)
             </span>
           </div>
         </div>
 
-        <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-between">
-          <span className="text-[11px] text-slate-400">Área Livre Restante</span>
-          <div className="mt-0.5 flex items-baseline gap-1">
-            <span className="text-lg font-bold font-mono text-emerald-400">
+        <div className="bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-slate-800 flex flex-col justify-between">
+          <span className="text-[10px] text-slate-400">Área Livre</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-base font-bold font-mono text-emerald-400">
               {(lastroMetrics.freeAreaCm2 / 10000).toFixed(2)}
             </span>
             <span className="text-[10px] text-slate-500">m² livres</span>
           </div>
         </div>
 
-        <div className="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-between">
-          <span className="text-[11px] text-slate-400">Status do Desenho</span>
-          <div className="mt-0.5 flex items-center gap-1.5">
+        <div className="bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-slate-800 flex flex-col justify-between">
+          <span className="text-[10px] text-slate-400">Status</span>
+          <div className="flex items-center gap-1">
             {columnsSummary.some((c) => c.hasCollision) ? (
               <span className="text-rose-400 text-xs font-bold flex items-center gap-1">
-                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                <AlertTriangle className="w-3 h-3 flex-shrink-0" />
                 Sobreposição!
               </span>
             ) : (
               <span className="text-emerald-400 text-xs font-bold flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
+                <ShieldCheck className="w-3 h-3 flex-shrink-0" />
                 Sem colisão
               </span>
             )}
@@ -372,33 +361,33 @@ export const LastroCanvasEditor: React.FC<LastroCanvasEditorProps> = ({
 
       {/* Selected Box Floating Quick Inspector Bar */}
       {selectedItem && (
-        <div className="bg-slate-950/90 border border-amber-500/40 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2.5 min-w-0">
+        <div className="bg-slate-950/90 border border-amber-500/40 rounded-xl px-2.5 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2 min-w-0">
             <span
-              className="w-3.5 h-3.5 rounded-sm shadow-sm flex-shrink-0"
+              className="w-3 h-3 rounded-sm shadow-sm flex-shrink-0"
               style={{ backgroundColor: selectedItem.color }}
             />
             <div className="min-w-0">
-              <span className="font-bold text-white truncate block">{selectedItem.name}</span>
-              <span className="text-xs text-slate-300 font-mono font-medium">
-                Caixa: <strong className="text-amber-400 font-bold">{selectedItem.width}L × {selectedItem.length}C × {selectedItem.height}A cm</strong> • Posição: (X: {Math.round(selectedItem.posX)}, Z: {Math.round(selectedItem.posZ)}) cm
+              <span className="font-bold text-white text-xs truncate block">{selectedItem.name}</span>
+              <span className="text-[11px] text-slate-300 font-mono">
+                <strong className="text-amber-400 font-semibold">{selectedItem.width}×{selectedItem.length}×{selectedItem.height}cm</strong> • (X:{Math.round(selectedItem.posX)}, Z:{Math.round(selectedItem.posZ)})
               </span>
             </div>
           </div>
 
-          <div className="flex items-center flex-wrap gap-2">
+          <div className="flex items-center flex-wrap gap-1.5">
             {/* Rotate 90° button */}
             <button
               id="btn-quick-rotate-selected"
               onClick={rotateSelectedItem}
-              className="flex items-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-medium rounded-lg border border-slate-700 cursor-pointer"
+              className="flex items-center gap-1 px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-[11px] font-medium rounded-md border border-slate-700 cursor-pointer"
             >
               <RotateCw className="w-3 h-3" />
               <span>Girar 90° ({selectedItem.rotation}°)</span>
             </button>
 
             {/* Column Count X & Z quick adjust */}
-            <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg">
+            <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded-md text-[11px]">
               <span className="text-[10px] text-slate-400">Colunas:</span>
               <span className="font-mono text-white font-semibold">
                 {(selectedItem.columnsCountX || 1)}×{(selectedItem.columnsCountZ || 1)}
@@ -411,14 +400,14 @@ export const LastroCanvasEditor: React.FC<LastroCanvasEditorProps> = ({
                   })
                 }
                 title="Adicionar coluna no lastro (X)"
-                className="w-5 h-5 bg-slate-800 hover:bg-slate-700 rounded text-xs flex items-center justify-center text-white cursor-pointer ml-1"
+                className="w-4 h-4 bg-slate-800 hover:bg-slate-700 rounded text-[10px] flex items-center justify-center text-white cursor-pointer ml-0.5"
               >
                 +
               </button>
             </div>
 
             {/* Quick Corners Align */}
-            <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded-lg">
+            <div className="flex items-center gap-0.5 bg-slate-900 border border-slate-800 p-0.5 rounded-md">
               <button
                 onClick={() => alignItemTo('top-left')}
                 title="Alinhar no Canto Noroeste (Topo Esquerdo)"
@@ -446,7 +435,7 @@ export const LastroCanvasEditor: React.FC<LastroCanvasEditorProps> = ({
       )}
 
       {/* Interactive 2D SVG Canvas of the Pallet Lastro */}
-      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center p-4 select-none">
+      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center p-2 sm:p-3 select-none">
         <svg
           id="lastro-svg-canvas"
           width={totalWidthCm * scale}

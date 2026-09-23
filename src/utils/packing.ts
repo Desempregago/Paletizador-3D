@@ -197,7 +197,8 @@ export function buildPalletColumns(
 
     // Respeitar rigorosamente a altura máxima permitida do pallet
     const availableH = Math.max(0, pallet.maxAllowedHeight - pallet.height);
-    const maxAllowedBoxes = Math.max(1, Math.floor(availableH / Math.max(1, item.height)));
+    const boxH = item.height > 0 ? item.height : 0.01;
+    const maxAllowedBoxes = Math.max(1, Math.floor(availableH / boxH));
     const stackH = Math.min(Math.max(1, item.stackCount || 1), maxAllowedBoxes);
 
     const itemTotalBoxes = colsX * colsZ * stackH;

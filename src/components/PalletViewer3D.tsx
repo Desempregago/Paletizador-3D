@@ -10,7 +10,9 @@ import {
   Columns3,
   AlertTriangle,
   ShieldCheck,
-  Check
+  Check,
+  Sliders,
+  Layers
 } from 'lucide-react';
 
 interface PalletViewer3DProps {
@@ -18,8 +20,11 @@ interface PalletViewer3DProps {
   boxes: PlacedBox[];
   columnsSummary: ColumnSummary[];
   explodedOffset: number; // 0 a 100% (eleva verticalmente as caixas nas colunas)
+  onExplodedOffsetChange?: (val: number) => void;
   showDimensions: boolean;
+  onToggleDimensions?: () => void;
   showWireframe: boolean;
+  onToggleWireframe?: () => void;
   onSelectBox?: (box: PlacedBox | null) => void;
   selectedBoxId?: string | null;
   selectedItemId?: string | null;
@@ -31,8 +36,11 @@ export const PalletViewer3D: React.FC<PalletViewer3DProps> = ({
   boxes,
   columnsSummary,
   explodedOffset,
+  onExplodedOffsetChange,
   showDimensions,
+  onToggleDimensions,
   showWireframe,
+  onToggleWireframe,
   onSelectBox,
   selectedBoxId,
   selectedItemId,
@@ -582,7 +590,7 @@ export const PalletViewer3D: React.FC<PalletViewer3DProps> = ({
     <div
       ref={containerRef}
       id="pallet-3d-container"
-      className="relative w-full h-full min-h-[480px] bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col select-none"
+      className="relative w-full h-full min-h-[240px] bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col select-none"
     >
       {/* 3D Canvas */}
       <canvas
@@ -594,36 +602,36 @@ export const PalletViewer3D: React.FC<PalletViewer3DProps> = ({
       />
 
       {/* Floating Camera & View Controls */}
-      <div className="absolute top-4 left-4 flex flex-wrap items-center gap-1.5 bg-slate-900/85 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-slate-700/60 shadow-lg text-xs z-10">
-        <span className="text-slate-400 font-medium px-1 flex items-center gap-1">
-          <Eye className="w-3.5 h-3.5 text-amber-400" />
-          Vistas:
+      <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1 bg-slate-900/85 backdrop-blur-md px-2 py-1 rounded-xl border border-slate-700/60 shadow-lg text-[11px] z-10">
+        <span className="text-slate-400 font-medium px-0.5 flex items-center gap-1">
+          <Eye className="w-3 h-3 text-amber-400" />
+          <span className="hidden sm:inline">Vistas:</span>
         </span>
         <button
           id="btn-cam-iso"
           onClick={() => setCameraPreset('iso')}
-          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-lg transition-colors font-medium cursor-pointer"
+          className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-md transition-colors font-medium cursor-pointer"
         >
-          3D Isométrica
+          3D Iso
         </button>
         <button
           id="btn-cam-top"
           onClick={() => setCameraPreset('top')}
-          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-lg transition-colors font-medium cursor-pointer"
+          className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-md transition-colors font-medium cursor-pointer"
         >
-          Topo (Planta)
+          Topo
         </button>
         <button
           id="btn-cam-front"
           onClick={() => setCameraPreset('front')}
-          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-lg transition-colors font-medium cursor-pointer"
+          className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-md transition-colors font-medium cursor-pointer"
         >
           Frontal
         </button>
         <button
           id="btn-cam-side"
           onClick={() => setCameraPreset('side')}
-          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-lg transition-colors font-medium cursor-pointer"
+          className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 active:bg-amber-500 active:text-slate-950 text-slate-200 rounded-md transition-colors font-medium cursor-pointer"
         >
           Lateral
         </button>
@@ -631,56 +639,118 @@ export const PalletViewer3D: React.FC<PalletViewer3DProps> = ({
           id="btn-cam-reset"
           onClick={() => setCameraPreset('iso')}
           title="Centralizar Câmera"
-          className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors ml-1 cursor-pointer"
+          className="p-1 text-slate-400 hover:text-white rounded-md transition-colors ml-0.5 cursor-pointer"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <RotateCcw className="w-3 h-3" />
         </button>
       </div>
 
-      {/* Top-Right Control Buttons */}
-      <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+      {/* Top-Right Control Toolbar (Dimensions, Wireframe, Exploded View, Fullscreen) */}
+      <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+        {/* Cotas 3D Toggle */}
+        {onToggleDimensions && (
+          <button
+            id="btn-3d-toggle-dimensions"
+            onClick={onToggleDimensions}
+            title={showDimensions ? 'Ocultar Cotas 3D' : 'Exibir Cotas 3D'}
+            className={`px-2 py-1 backdrop-blur-md rounded-lg border text-[11px] font-medium transition-colors cursor-pointer shadow-md ${
+              showDimensions
+                ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                : 'bg-slate-900/85 hover:bg-slate-800 text-slate-400 border-slate-700/60 hover:text-white'
+            }`}
+          >
+            Cotas
+          </button>
+        )}
+
+        {/* Wireframe Toggle */}
+        {onToggleWireframe && (
+          <button
+            id="btn-3d-toggle-wireframe"
+            onClick={onToggleWireframe}
+            title={showWireframe ? 'Ocultar Arames' : 'Exibir Arames'}
+            className={`px-2 py-1 backdrop-blur-md rounded-lg border text-[11px] font-medium transition-colors cursor-pointer shadow-md ${
+              showWireframe
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                : 'bg-slate-900/85 hover:bg-slate-800 text-slate-400 border-slate-700/60 hover:text-white'
+            }`}
+          >
+            Arames
+          </button>
+        )}
+
+        {/* Exploded View Slider Pill */}
+        {onExplodedOffsetChange && (
+          <div className="hidden sm:flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-700/60 shadow-md text-[11px]">
+            <Sliders className="w-3 h-3 text-amber-400 flex-shrink-0" />
+            <span className="text-slate-300 text-[10px]">Separar:</span>
+            <input
+              id="input-3d-exploded-slider"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={explodedOffset}
+              onChange={(e) => onExplodedOffsetChange(parseInt(e.target.value) || 0)}
+              className="w-14 sm:w-20 accent-amber-500 h-1 bg-slate-800 rounded cursor-pointer"
+            />
+            <span className="font-mono text-amber-400 font-semibold text-[10px] w-6 text-right">
+              {explodedOffset}%
+            </span>
+            {explodedOffset > 0 && (
+              <button
+                onClick={() => onExplodedOffsetChange(0)}
+                title="Resetar separação vertical"
+                className="text-[10px] text-slate-400 hover:text-white underline cursor-pointer ml-0.5"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
+
         <button
           id="btn-toggle-fullscreen"
           onClick={toggleFullscreen}
           title={isFullscreen ? 'Sair da Tela Cheia' : 'Tela Cheia'}
-          className="p-2 bg-slate-900/85 backdrop-blur-md hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-700/60 shadow-lg transition-colors cursor-pointer"
+          className="p-1.5 bg-slate-900/85 backdrop-blur-md hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700/60 shadow-lg transition-colors cursor-pointer"
         >
-          {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
         </button>
       </div>
 
       {/* Bottom Floating Legend / Dimension Badges */}
-      <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-3 pointer-events-none z-10">
+      <div className="absolute bottom-2.5 left-2.5 right-2.5 flex flex-wrap items-center justify-between gap-2 pointer-events-none z-10">
         {/* Dimension indicator badge */}
-        <div className="pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700/70 shadow-lg flex items-center gap-3 text-xs text-slate-300">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-sky-400"></span>
-            <span>Largura: <strong className="text-white font-mono">{pallet.width} cm</strong></span>
+        <div className="pointer-events-auto bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700/70 shadow-lg flex items-center gap-2 text-[11px] text-slate-300">
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm bg-sky-400"></span>
+            <span>L: <strong className="text-white font-mono">{pallet.width}cm</strong></span>
           </div>
           <span className="text-slate-600">|</span>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400"></span>
-            <span>Comprimento: <strong className="text-white font-mono">{pallet.length} cm</strong></span>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm bg-amber-400"></span>
+            <span>C: <strong className="text-white font-mono">{pallet.length}cm</strong></span>
+          </div>
+          <span className="hidden sm:inline text-slate-600">|</span>
+          <div className="hidden sm:flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm bg-emerald-400"></span>
+            <span>Base: <strong className="text-white font-mono">{pallet.height}cm</strong></span>
           </div>
           <span className="text-slate-600">|</span>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-emerald-400"></span>
-            <span>Altura Base: <strong className="text-white font-mono">{pallet.height} cm</strong></span>
-          </div>
-          <span className="text-slate-600">|</span>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400"></span>
-            <span>Teto Máx: <strong className="text-amber-400 font-mono">{pallet.maxAllowedHeight} cm</strong></span>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm bg-amber-400"></span>
+            <span>Teto: <strong className="text-amber-400 font-mono">{pallet.maxAllowedHeight}cm</strong></span>
           </div>
         </div>
 
         {/* Orbit Helper Tip */}
-        <div className="bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center gap-2">
-          <span>Girar: <strong>Botão Esquerdo</strong></span>
+        <div className="hidden md:flex bg-slate-900/80 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-800 text-[10px] text-slate-400 items-center gap-1.5">
+          <span>Girar: <strong>Esq</strong></span>
           <span>•</span>
           <span>Zoom: <strong>Scroll</strong></span>
           <span>•</span>
-          <span>Mover: <strong>Botão Direito</strong></span>
+          <span>Mover: <strong>Dir</strong></span>
         </div>
       </div>
 
